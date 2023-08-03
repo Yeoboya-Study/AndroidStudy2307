@@ -9,6 +9,7 @@ fun main() {
     println(string1.checkIntOrNull())
     val string2 = "11111"
     println(string2.checkIntOrNull())
+    println(string2.checkIntOrNull())
 }
 
 fun List<String>.getLongerThan(length: Int) = this.filter { length < it.length }
