@@ -2,71 +2,27 @@ package com.example.androidstudy
 
 fun main() {
 
-
-}
-
-// 동물 클래스 (추상 클래스)
-abstract class Animal {
-    abstract val species: String
-    abstract fun makeSound()
-}
-
-// 고양이 클래스 (open 클래스)
-open class Cat : Animal() {
-    override val species = "Cat"
-
-    override fun makeSound() {
-        println("$species says Meow!")
+    val menu = (getMenu(1) as Americano).apply {
+        setTemperature(Temperature.Hot)
+        setVanillaCream(CoffeeOption.Vanilla)
     }
-}
+    menu.getMenu()
 
-// 개 클래스 (open 클래스)
-open class Dog : Animal() {
-    override val species = "Dog"
+    val menu2 = (getMenu(2) as GrapeFruitAde)
+    menu2.getMenu()
 
-    override fun makeSound() {
-        println("$species says Woof!")
+    val americano = Americano().apply {
+        setTemperature(Temperature.Hot)
+        setVanillaCream(CoffeeOption.Vanilla)
     }
+    americano.getMenu()
+    println(americano is VanillaCream)
 }
 
-// 점박이 특징
-interface DottedPattern {
-    val pattern: String get() = "dotted"
-
-    fun getDotCnt(): Int
-}
-
-// 줄무늬 특징
-interface LinearPattern {
-    val pattern: String get() = "linear"
-
-    fun getLinearCnt(): Int
-}
-
-class Kitty: Cat(), DottedPattern {
-    override fun getDotCnt(): Int {
-        println("Kitty has three big dots.")
-        return 3
-    }
-}
-
-class Nabi: Cat(), LinearPattern {
-    override fun getLinearCnt(): Int {
-        println("Nabi has lots of lines")
-        return 50
-    }
-}
-
-class Puppy: Dog(), DottedPattern {
-    override fun getDotCnt(): Int {
-        println("Puppy has 26 small dots")
-        return 26
-    }
-}
-
-class Bbobbi: Dog(), LinearPattern {
-    override fun getLinearCnt(): Int {
-        println("Bbobbi has 2 lines on face")
-        return 2
+fun getMenu(order: Int): Menu {
+    return when (order) {
+        1 -> Americano()
+        2 -> GrapeFruitAde()
+        else -> GrapeFruitHoneyTea()
     }
 }
