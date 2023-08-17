@@ -2,7 +2,7 @@ package com.example.androidstudy
 
 import java.lang.StringBuilder
 
-fun main() {
+fun main0727() {
 //    fun printName(name : String?) {
 //        name?.run {println("My name is $name ")} ?: run{println("I don't have name")}
 //    }
