@@ -27,7 +27,7 @@ abstract class Coffee : Menu() {
     }
 }
 
-class Americano : Coffee(), VanillaCream, AlmondCream {
+class Americano : Coffee() {
 
     override val price = 4000
     override val menuName = "아메리카노"
@@ -37,21 +37,19 @@ class Americano : Coffee(), VanillaCream, AlmondCream {
         println("${price}원 $coffeeOption $optionTemperature $menuName 나왔습니다!")
     }
 
-    override fun setVanillaCream(option: CoffeeOption) {
+    fun addVanilla(option: CoffeeOption) {
         coffeeOption = option
     }
 
-    override fun setAlmondCream(option: CoffeeOption) {
+    fun addAlmond(option: CoffeeOption) {
         coffeeOption = option
     }
 }
 
-interface VanillaCream {
-    fun setVanillaCream(option: CoffeeOption)
-}
+class Latte : Coffee() {
 
-interface AlmondCream {
-    fun setAlmondCream(option: CoffeeOption)
+    override val price = 4500
+    override val menuName = "카페라떼"
 }
 
 interface GrapeFruit
@@ -60,14 +58,14 @@ class GrapeFruitAde : Menu(), GrapeFruit {
     override val menuName = "자몽에이드"
     override val price: Int = 4500
     override fun getMenu() {
-        println("$menuName 나왔습니다!")
+        println("${price}원 $menuName 나왔습니다!")
     }
 }
 
 class GrapeFruitHoneyTea : Menu(), GrapeFruit {
-    override val menuName = "자몽에이드"
+    override val menuName = "자몽허니블랙티"
     override val price: Int = 4500
     override fun getMenu() {
-        println()
+        println("${price}원 $menuName 나왔습니다!")
     }
 }

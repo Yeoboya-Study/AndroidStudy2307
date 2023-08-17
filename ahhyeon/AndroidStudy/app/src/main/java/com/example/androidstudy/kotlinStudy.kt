@@ -2,27 +2,21 @@ package com.example.androidstudy
 
 fun main() {
 
-    val menu = (getMenu(1) as Americano).apply {
-        setTemperature(Temperature.Hot)
-        setVanillaCream(CoffeeOption.Vanilla)
-    }
-    menu.getMenu()
+    val menuList = mutableListOf<Menu>()
 
-    val menu2 = (getMenu(2) as GrapeFruitAde)
-    menu2.getMenu()
-
-    val americano = Americano().apply {
+    val americano1 = Americano().apply {
         setTemperature(Temperature.Hot)
-        setVanillaCream(CoffeeOption.Vanilla)
+        addVanilla(CoffeeOption.Vanilla)
     }
-    americano.getMenu()
-    println(americano is VanillaCream)
+    menuList.add(americano1)
+    menuList.add(GrapeFruitAde())
+
+    menuList.forEach {
+        it.getMenu()
+    }
+
+    menuList.filter {
+        it is GrapeFruit
+    }
 }
 
-fun getMenu(order: Int): Menu {
-    return when (order) {
-        1 -> Americano()
-        2 -> GrapeFruitAde()
-        else -> GrapeFruitHoneyTea()
-    }
-}

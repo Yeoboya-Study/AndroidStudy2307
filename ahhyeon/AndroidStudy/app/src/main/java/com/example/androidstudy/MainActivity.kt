@@ -14,6 +14,13 @@ class MainActivity : AppCompatActivity() {
 
         }
 
-
     }
 }
+
+data class Test3(
+    val test: String = ""
+)
+
+data class Test4(
+    val test: String = ""
+)
