@@ -1,3 +1,21 @@
 <resources>
     <string name="app_name">CafeSampleApp</string>
+    <string name="cafe_title">Cafe</string>
+    <string name="gallery_title">Gallery</string>
+    <string name="americano">Americano</string>
+    <string name="cafe_latte">CafeLatte</string>
+    <string name="vanilla_latte">VanillaLatte</string>
+    <string name="vanilla_cream_frappuccino">VanillaCream Frappuccino</string>
+    <string name="grapefruit_ade">GrapeFruitAde</string>
+    <string name="grapefruit_honey_black_tea">GrapeFruit Honey Black Tea</string>
+    <string name="option">Option</string>
+    <string name="temperature">hot / ice</string>
+    <string name="hot">hot</string>
+    <string name="ice">ice</string>
+    <string name="additional">additional</string>
+    <string name="vanilla">vanilla</string>
+    <string name="almond">almond</string>
+    <string name="none">none</string>
+    <string name="price">%s원</string>
+    <string name="final_option">%1$s , %2$s</string>
 </resources>

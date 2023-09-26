@@ -13,6 +13,7 @@ class MainActivity : AppCompatActivity() {
         val textView = findViewById<TextView>(R.id.textView).apply {
 
         }
+        GrapeFruitAde().price
 
     }
 }
