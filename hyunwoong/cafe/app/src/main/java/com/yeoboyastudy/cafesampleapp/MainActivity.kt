@@ -9,6 +9,7 @@ import com.yeoboyastudy.cafesampleapp.databinding.ActivityMainBinding
 import com.yeoboyastudy.cafesampleapp.extension.addFragment
 import com.yeoboyastudy.cafesampleapp.extension.showToast
 import com.yeoboyastudy.cafesampleapp.ui.CafeFragment
+import com.yeoboyastudy.cafesampleapp.ui.GalleryFragment
 
 class MainActivity : AppCompatActivity() {
 
@@ -18,38 +19,21 @@ class MainActivity : AppCompatActivity() {
 
     private var mCafeFragment: CafeFragment? = null
 
-    //private var mGalleryFragment: GalleryFragment? = null
+    private var mGalleryFragment: GalleryFragment? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         _binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        onClick()
+        setOnClick()
     }
-
-    private fun onClick() {
-        binding.cafeButton.setOnClickListener {
-            addFragment2()
-        }
-    }
-
-    private fun addFragment2() {
-        mCafeFragment = CafeFragment().apply {
-            arguments  = bundleOf("woong" to "hi")
-        }
-
-        binding.container.isVisible = true
-        addFragment(R.id.container, mCafeFragment, addBackStack = true)
-    }
-
-
     private fun setOnClick() = with(binding) {
         cafeButton.setOnClickListener {
             addCafeFragment()
         }
 
         galleryButton.setOnClickListener {
-            showToast("click!!")
+            addGalleryFragment()
         }
     }
 
@@ -62,6 +46,12 @@ class MainActivity : AppCompatActivity() {
         binding.container.isVisible = true
 
         addFragment(R.id.container, mCafeFragment, addBackStack = true)
+    }
+
+    private fun addGalleryFragment() {
+        mGalleryFragment = GalleryFragment()
+        binding.container.isVisible = true
+        addFragment(R.id.container, mGalleryFragment, addBackStack = true)
     }
 
     override fun onBackPressed() {
