@@ -1,0 +1,26 @@
+{
+    "logs": [
+        {
+            "outputFile": "com.yeoboyastudy.cafesampleapp-mergeDebugResources-29:/values-sw360dp-v13/values-sw360dp-v13.xml",
+            "map": [
+                {
+                    "source": "C:\\Users\\smhrd\\Desktop\\AndroidStudy2307\\hyunwoong\\cafe\\app\\src\\main\\res\\values-sw360dp\\dimens.xml",
+                    "from": {
+                        "startLines": "4,2,3",
+                        "startColumns": "4,4,4",
+                        "startOffsets": "142,57,100",
+                        "endColumns": "48,41,40",
+                        "endOffsets": "186,94,136"
+                    },
+                    "to": {
+                        "startLines": "2,3,4",
+                        "startColumns": "4,4,4",
+                        "startOffsets": "55,104,146",
+                        "endColumns": "48,41,40",
+                        "endOffsets": "99,141,182"
+                    }
+                }
+            ]
+        }
+    ]
+}
