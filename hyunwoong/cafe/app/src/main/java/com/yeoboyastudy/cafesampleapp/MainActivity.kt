@@ -9,6 +9,7 @@ import com.yeoboyastudy.cafesampleapp.databinding.ActivityMainBinding
 import com.yeoboyastudy.cafesampleapp.extension.addFragment
 import com.yeoboyastudy.cafesampleapp.extension.showToast
 import com.yeoboyastudy.cafesampleapp.ui.CafeFragment
+import com.yeoboyastudy.cafesampleapp.ui.ChatFragment
 import com.yeoboyastudy.cafesampleapp.ui.GalleryFragment
 
 class MainActivity : AppCompatActivity() {
@@ -20,6 +21,8 @@ class MainActivity : AppCompatActivity() {
     private var mCafeFragment: CafeFragment? = null
 
     private var mGalleryFragment: GalleryFragment? = null
+    private var mChatFragment: ChatFragment? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -34,6 +37,10 @@ class MainActivity : AppCompatActivity() {
 
         galleryButton.setOnClickListener {
             addGalleryFragment()
+        }
+
+        chatButton.setOnClickListener {
+            addChatFragment()
         }
     }
 
@@ -52,6 +59,12 @@ class MainActivity : AppCompatActivity() {
         mGalleryFragment = GalleryFragment()
         binding.container.isVisible = true
         addFragment(R.id.container, mGalleryFragment, addBackStack = true)
+    }
+
+    private fun addChatFragment() {
+        mChatFragment = ChatFragment()
+        binding.container.isVisible = true
+        addFragment(R.id.container, mChatFragment, addBackStack = true)
     }
 
     override fun onBackPressed() {
