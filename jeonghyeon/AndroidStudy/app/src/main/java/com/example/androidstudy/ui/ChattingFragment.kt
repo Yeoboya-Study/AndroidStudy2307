@@ -9,12 +9,15 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.example.androidstudy.adapter.ChattingAdapter
 import com.example.androidstudy.data.ChatData
 import com.example.androidstudy.databinding.DialogSelectPhotoBinding
 import com.example.androidstudy.databinding.FragmentChattingBinding
+import com.example.androidstudy.model.ChattingViewModel
 
 class ChattingFragment : Fragment() {
 
@@ -23,6 +26,7 @@ class ChattingFragment : Fragment() {
     private var message: ChatData? = null
     private lateinit var chattingAdapter: ChattingAdapter
     private lateinit var selectPhotoDialog: SelectPhotoDialog
+    private val model: ChattingViewModel by activityViewModels()
     private var mine = true
     private var img: String? = null
 
@@ -31,9 +35,7 @@ class ChattingFragment : Fragment() {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         _binding = FragmentChattingBinding.inflate(inflater, container, false)
         return binding.root
@@ -41,8 +43,9 @@ class ChattingFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        onClick()
         setAdapter()
+        setObserver()
+        onClick()
     }
 
     override fun onDestroy() {
@@ -54,13 +57,10 @@ class ChattingFragment : Fragment() {
      * 클릭 이벤트 등록
      */
     private fun onClick() = with(binding) {
-        /**
-         * 이미지 데이터 전달 후 초기화
-         */
+        //이미지 데이터 전달 후 초기화
         sendBtn.setOnClickListener {
-            message = ChatData(binding.inputEdt.text.toString(), mine, img)
+            model.sendChatting(ChatData(binding.inputEdt.text.toString(), mine, img))
             mine = !mine
-            chattingAdapter.addToList(message)
             chattingList.scrollToPosition(0)
             clearData()
         }
@@ -69,6 +69,9 @@ class ChattingFragment : Fragment() {
         }
     }
 
+    /**
+     * Adapter설정
+     */
     private fun setAdapter() {
         chattingAdapter = ChattingAdapter()
         binding.chattingList.apply {
@@ -76,7 +79,15 @@ class ChattingFragment : Fragment() {
             layoutManager =
                 LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, true)
         }
-        chattingAdapter.addToList(message)
+    }
+
+    /**
+     * ViewModel 값 Observer 설정
+     */
+    private fun setObserver() {
+        model.chatList.observe(viewLifecycleOwner) {
+            chattingAdapter.addToList(it)
+        }
     }
 
     /**
@@ -84,9 +95,7 @@ class ChattingFragment : Fragment() {
      */
     private fun setPhotoBinding() {
         selectPhotoDialog = SelectPhotoDialog(onClick = { imgUrl ->
-            Glide.with(binding.root)
-                .load(imgUrl)
-                .into(binding.inputImg)
+            Glide.with(binding.root).load(imgUrl).into(binding.inputImg)
             img = imgUrl
             binding.imgInputContainer.isVisible = true
         })

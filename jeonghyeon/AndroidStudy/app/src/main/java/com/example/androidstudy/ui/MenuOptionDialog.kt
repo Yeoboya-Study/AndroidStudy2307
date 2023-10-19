@@ -89,16 +89,13 @@ class MenuOptionDialog(
      */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        /**
-         * 커피 옵션 표시 여부
-         */
+
+        //커피 옵션 여부 표시
         if (isAmericano) {
             binding.addOptionLayout.isVisible = true
         }
 
-        /**
-         * 옵션 변경 감지
-         */
+        //옵션 변경 감지
         binding.apply {
             temperatureGroup.setOnCheckedChangeListener(temperatureCheckedChangedListener)
             addGroup.setOnCheckedChangeListener(optionCheckedChangedListener)

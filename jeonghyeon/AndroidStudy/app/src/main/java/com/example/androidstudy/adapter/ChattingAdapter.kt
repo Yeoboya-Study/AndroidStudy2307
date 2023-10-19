@@ -55,7 +55,6 @@ class ChattingAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     enum class Type {
         TEXT_RIGHT, TEXT_LEFT
     }
-
     override fun getItemViewType(position: Int): Int {
         return if (chatList[position].type) Type.TEXT_RIGHT.ordinal else Type.TEXT_LEFT.ordinal
     }
@@ -89,14 +88,13 @@ class ChattingAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun getItemCount(): Int {
         return chatList.size
     }
-
+    
     /**
-     * chatList에 ChatData(message)추가, UI업데이트
+     * chatList 업데이트, UI업데이트
      */
-    fun addToList(list: ChatData?) {
-        if (list != null) {
-            chatList.add(0, list)
-            notifyItemInserted(0)
-        }
+    fun addToList(list: MutableList<ChatData>) {
+        chatList = list
+        if(list.size > 0) notifyItemInserted(0)
+        else notifyDataSetChanged()
     }
 }
