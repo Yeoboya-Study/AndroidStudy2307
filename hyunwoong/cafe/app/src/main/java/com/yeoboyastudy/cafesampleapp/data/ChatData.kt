@@ -1,6 +1,18 @@
 package com.yeoboyastudy.cafesampleapp.data
 
-data class ChatData(
-    val message: String,
-    val isMe: Boolean = true
-)
+sealed class ChatData {
+
+    interface BaseItem {
+        val isMe: Boolean
+    }
+
+    data class TextItem(
+        val message: String,
+        override val isMe: Boolean = true
+    ): ChatData(), BaseItem
+
+    data class ImageItem(
+        val url: String,
+        override val isMe: Boolean = true
+    ): ChatData(), BaseItem
+}

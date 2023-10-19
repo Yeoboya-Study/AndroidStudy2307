@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.yeoboyastudy.cafesampleapp.adapter.ChatAdapter
 import com.yeoboyastudy.cafesampleapp.data.ChatData
 import com.yeoboyastudy.cafesampleapp.databinding.FragmentChatBinding
+import com.yeoboyastudy.cafesampleapp.dialog.GalleryDialog
 
 class ChatFragment: Fragment() {
 
@@ -20,6 +21,12 @@ class ChatFragment: Fragment() {
             stackFromEnd = true
         }
     }
+
+    private val galleryDialog by lazy { GalleryDialog().apply {
+        result = {
+            sendMessage(ChatData.ImageItem(it, !chatAdapter.lastMessageIsMe()))
+        }
+    } }
 
     private val chatAdapter by lazy {
         ChatAdapter()
@@ -44,14 +51,16 @@ class ChatFragment: Fragment() {
         btnSend.setOnClickListener {
             val message = etMessage.text.toString()
             if(message.isNotEmpty()) {
-                val isMe = if(chatAdapter.adapterList.isEmpty()) true
-                else {
-                    !chatAdapter.adapterList.last().isMe
-                }
-                chatAdapter.addMessage(ChatData(message, isMe))
+                sendMessage(ChatData.TextItem(message, !chatAdapter.lastMessageIsMe()))
                 etMessage.text.clear()
                 recyclerView.scrollToPosition(chatAdapter.adapterList.lastIndex)
             }
+        }
+
+        btnGallery.setOnClickListener {
+            if(!galleryDialog.isAdded)
+                galleryDialog.show(childFragmentManager, null)
+            else galleryDialog.dismiss()
         }
     }
 
@@ -61,6 +70,11 @@ class ChatFragment: Fragment() {
             layoutManager = chatLayoutManager
         }
         chatAdapter.set(listOf())
+    }
+
+    private fun sendMessage(data: ChatData) {
+        chatAdapter.addMessage(data)
+        binding.recyclerView.scrollToPosition(chatAdapter.adapterList.lastIndex)
     }
 
     override fun onDestroyView() {

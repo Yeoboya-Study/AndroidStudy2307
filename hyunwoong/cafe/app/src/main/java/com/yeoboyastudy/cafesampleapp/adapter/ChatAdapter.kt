@@ -3,12 +3,17 @@ package com.yeoboyastudy.cafesampleapp.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.yeoboyastudy.cafesampleapp.data.ChatData
+import com.yeoboyastudy.cafesampleapp.databinding.ItemMessageImageLeftBinding
+import com.yeoboyastudy.cafesampleapp.databinding.ItemMessageImageRightBinding
 import com.yeoboyastudy.cafesampleapp.databinding.ItemMessageTextLeftBinding
 import com.yeoboyastudy.cafesampleapp.databinding.ItemMessageTextRightBinding
+import com.yeoboyastudy.cafesampleapp.dialog.GalleryDialog
 
 enum class ChatViewType {
     TEXT_LEFT, TEXT_RIGHT,
+    IMAGE_LEFT, IMAGE_RIGHT
 }
 
 class ChatAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>()  {
@@ -26,11 +31,19 @@ class ChatAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>()  {
         notifyItemInserted(adapterList.lastIndex)
     }
 
+    fun lastMessageIsMe() = if(adapterList.isEmpty()) true
+        else (adapterList.last() as ChatData.BaseItem).isMe
+
     override fun getItemViewType(position: Int): Int {
-        return if(adapterList[position].isMe) {
-            ChatViewType.TEXT_RIGHT.ordinal
+        return when(val msgItem = adapterList.getOrNull(position)) {
+            is ChatData.TextItem -> {
+                if(msgItem.isMe) ChatViewType.TEXT_RIGHT.ordinal else ChatViewType.TEXT_LEFT.ordinal
+            }
+            is ChatData.ImageItem -> {
+                if(msgItem.isMe) ChatViewType.IMAGE_RIGHT.ordinal else ChatViewType.IMAGE_LEFT.ordinal
+            }
+            else -> ChatViewType.TEXT_RIGHT.ordinal
         }
-        else ChatViewType.TEXT_LEFT.ordinal
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -40,9 +53,19 @@ class ChatAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>()  {
                     ItemMessageTextRightBinding.inflate(LayoutInflater.from(parent.context), parent, false)
                 )
             }
-            else -> {
+            ChatViewType.TEXT_LEFT.ordinal -> {
                 TextLeftViewHolder(
                     ItemMessageTextLeftBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+                )
+            }
+            ChatViewType.IMAGE_RIGHT.ordinal -> {
+                ImageRightViewHolder(
+                    ItemMessageImageRightBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+                )
+            }
+            else -> {
+                ImageLeftViewHolder(
+                    ItemMessageImageLeftBinding.inflate(LayoutInflater.from(parent.context), parent, false)
                 )
             }
         }
@@ -51,29 +74,57 @@ class ChatAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>()  {
     override fun getItemCount(): Int = adapterList.size
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        return when(holder) {
+        when(holder) {
             is TextLeftViewHolder -> {
-                holder.bind(adapterList[position])
+                holder.bind(position)
             }
             is TextRightViewHolder -> {
-                holder.bind(adapterList[position])
+                holder.bind(position)
             }
-            else -> {
+            is ImageRightViewHolder -> {
+                holder.bind(position)
+            }
+            is ImageLeftViewHolder -> {
+                holder.bind(position)
             }
         }
     }
 
     inner class TextLeftViewHolder(private val binding: ItemMessageTextLeftBinding) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(message: ChatData) = with(binding) {
-            tvMessage.text = message.message
+        fun bind(position: Int) = with(binding) {
+            val data = adapterList[position] as ChatData.TextItem
+            tvMessage.text = data.message
         }
     }
 
     inner class TextRightViewHolder(private val binding: ItemMessageTextRightBinding) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(message: ChatData) = with(binding) {
-            tvMessage.text = message.message
+        fun bind(position: Int) = with(binding) {
+            val data = adapterList[position] as ChatData.TextItem
+            tvMessage.text = data.message
+        }
+    }
+
+    inner class ImageRightViewHolder(private val binding: ItemMessageImageRightBinding) : RecyclerView.ViewHolder(binding.root) {
+
+        fun bind(position: Int) = with(binding) {
+            val data = adapterList[position] as ChatData.ImageItem
+            Glide.with(binding.root)
+                .load(data.url)
+                .centerCrop()
+                .into(imageView)
+        }
+    }
+
+    inner class ImageLeftViewHolder(private val binding: ItemMessageImageLeftBinding) : RecyclerView.ViewHolder(binding.root) {
+
+        fun bind(position: Int) = with(binding) {
+            val data = adapterList[position] as ChatData.ImageItem
+            Glide.with(binding.root)
+                .load(data.url)
+                .centerCrop()
+                .into(imageView)
         }
     }
 }

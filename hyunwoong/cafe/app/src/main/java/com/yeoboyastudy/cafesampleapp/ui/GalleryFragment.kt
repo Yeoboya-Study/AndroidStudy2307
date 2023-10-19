@@ -20,7 +20,7 @@ class GalleryFragment: Fragment() {
 
     private var _binding: FragmentGalleryBinding? = null
     private val binding get() = _binding!!
-    private val imageAdapter by lazy { ImageAdapter() }
+    private val imageAdapter by lazy { ImageAdapter(){} }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -45,10 +45,7 @@ class GalleryFragment: Fragment() {
 
     private fun getRandomPhoto(query: String? = null) = lifecycleScope.launch {
         UnsplashApiClient.getRandomPhotos(query)?.let { photoList ->
-            imageAdapter.apply {
-                images = photoList
-                notifyDataSetChanged()
-            }
+            imageAdapter.set(photoList)
         }
     }
 
