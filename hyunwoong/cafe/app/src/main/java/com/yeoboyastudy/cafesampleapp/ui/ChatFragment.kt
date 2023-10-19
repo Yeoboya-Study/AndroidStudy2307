@@ -5,11 +5,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentResultListener
+import androidx.fragment.app.setFragmentResultListener
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.yeoboyastudy.cafesampleapp.R
 import com.yeoboyastudy.cafesampleapp.adapter.ChatAdapter
 import com.yeoboyastudy.cafesampleapp.data.ChatData
 import com.yeoboyastudy.cafesampleapp.databinding.FragmentChatBinding
 import com.yeoboyastudy.cafesampleapp.dialog.GalleryDialog
+import com.yeoboyastudy.cafesampleapp.extension.addFragment
+import com.yeoboyastudy.cafesampleapp.extension.removeFragment
 
 class ChatFragment: Fragment() {
 
@@ -22,14 +27,16 @@ class ChatFragment: Fragment() {
         }
     }
 
-    private val galleryDialog by lazy { GalleryDialog().apply {
-        result = {
-            sendMessage(ChatData.ImageItem(it, !chatAdapter.lastMessageIsMe()))
-        }
-    } }
-
     private val chatAdapter by lazy {
         ChatAdapter()
+    }
+
+    private val bottomMenuFragment by lazy {
+        ChatBottomFragment().apply {
+            bottomResult = {
+                sendMessage(ChatData.ImageItem(it, !chatAdapter.lastMessageIsMe()))
+            }
+        }
     }
 
     override fun onCreateView(
@@ -57,10 +64,10 @@ class ChatFragment: Fragment() {
             }
         }
 
-        btnGallery.setOnClickListener {
-            if(!galleryDialog.isAdded)
-                galleryDialog.show(childFragmentManager, null)
-            else galleryDialog.dismiss()
+        btnPlus.setOnClickListener {
+            if(childFragmentManager.findFragmentById(R.id.containerView) != bottomMenuFragment)
+                addFragment(R.id.containerView, bottomMenuFragment)
+            else removeFragment(R.id.containerView, bottomMenuFragment)
         }
     }
 
