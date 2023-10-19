@@ -9,6 +9,7 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.RadioGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
@@ -21,8 +22,8 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
 class MenuOptionDialog(
     private val isAmericano: Boolean,
-    private var dismissResult : ((MenuData)-> Unit)
-    ): BottomSheetDialogFragment() {
+    private var dismissResult: ((MenuData) -> Unit)
+) : DialogFragment() {
 
     /**
      * 사용자가 선택한 메뉴 정보에 대한 Key값 (String 이름)
@@ -39,13 +40,22 @@ class MenuOptionDialog(
     var menu = ""
 
     /**
-     * Dialog 생성 후 반환
+     * Dialog 생성 후 반환 ,  Dialog 설정 ( dialog 취소 설정, Layout, 크기 위치 조정)
+     * onStart()이전에 실행이 먼저 됨
      */
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val dialog = object : Dialog(requireContext()) {
-            //dialog에는 onBackPressed가 살아있는..?
             override fun onBackPressed() {
                 dismiss()
+            }
+        }
+        dialog?.apply {
+            isCancelable = true
+            setCanceledOnTouchOutside(true)
+            setContentView(R.layout.dialog_menu_option)
+            window?.apply {
+                setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                setGravity(Gravity.BOTTOM)
             }
         }
         return dialog
@@ -56,29 +66,9 @@ class MenuOptionDialog(
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {bundle ->
+        arguments?.let { bundle ->
             menu = bundle.getString(MENU_KEY) ?: ""
-            Log.d("wd",menu)
         }
-    }
-
-    /**
-     *시작 시 Dialog 설정 ( dialog 취소 설정, 레이아웃, 크기 위치 조정)
-     */
-    override fun onStart() {
-        super.onStart()
-        dialog?.apply {
-            isCancelable = true
-            setCanceledOnTouchOutside(true)
-        }
-
-        /**
-         * 레이아웃 크기, 위치 조정
-         */
-        val width = ViewGroup.LayoutParams.MATCH_PARENT
-        val height = ViewGroup.LayoutParams.WRAP_CONTENT
-        dialog?.window?.setLayout(width, height)
-        dialog?.window?.setGravity(Gravity.BOTTOM)
     }
 
     /**
@@ -99,7 +89,6 @@ class MenuOptionDialog(
      */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         /**
          * 커피 옵션 표시 여부
          */
@@ -117,7 +106,6 @@ class MenuOptionDialog(
         setOnClick()
     }
 
-
     /**
      * Dialog, View 제거
      */
@@ -133,20 +121,22 @@ class MenuOptionDialog(
     /**
      * 옵션 선택에 따른 listener설정
      */
-    private val temperatureCheckedChangedListener = RadioGroup.OnCheckedChangeListener { radioGroup, checkedId ->
-        when (checkedId) {
-            binding.hotOption.id -> temperatureOption = Temperature.Hot
-            binding.coldOption.id -> temperatureOption = Temperature.Ice
+    private val temperatureCheckedChangedListener =
+        RadioGroup.OnCheckedChangeListener { radioGroup, checkedId ->
+            when (checkedId) {
+                binding.hotOption.id -> temperatureOption = Temperature.Hot
+                binding.coldOption.id -> temperatureOption = Temperature.Ice
+            }
         }
-    }
 
-    private val optionCheckedChangedListener = RadioGroup.OnCheckedChangeListener { radioGroup, checkedId ->
-        when (checkedId) {
-            binding.vanillaOption.id -> coffeeOption = CoffeeOption.Vanilla
-            binding.almondOption.id -> coffeeOption = CoffeeOption.Almond
-            binding.noneOption.id -> coffeeOption = CoffeeOption.None
+    private val optionCheckedChangedListener =
+        RadioGroup.OnCheckedChangeListener { radioGroup, checkedId ->
+            when (checkedId) {
+                binding.vanillaOption.id -> coffeeOption = CoffeeOption.Vanilla
+                binding.almondOption.id -> coffeeOption = CoffeeOption.Almond
+                binding.noneOption.id -> coffeeOption = CoffeeOption.None
+            }
         }
-    }
 
     /**
      * 클릭 이벤트 ( 주문, 취소에 대한 이벤트 설정 )
@@ -155,7 +145,7 @@ class MenuOptionDialog(
         orderButton.setOnClickListener {
             Log.d("주문하기", menu)
             when (menu) {
-                "아메리카노" ->{
+                "아메리카노" -> {
                     val americano = MenuData.CoffeeData(
                         "americano",
                         4000,
@@ -165,6 +155,7 @@ class MenuOptionDialog(
                     dismissResult?.invoke(americano)
 
                 }
+
                 "카페라떼" -> {
                     val latte = MenuData.CoffeeData(
                         "latte",
@@ -174,6 +165,7 @@ class MenuOptionDialog(
                     )
                     dismissResult?.invoke(latte)
                 }
+
                 "바닐라라떼" -> {
                     val vanillaLatte = MenuData.CoffeeData(
                         "vanillaLatte",
@@ -183,6 +175,7 @@ class MenuOptionDialog(
                     )
                     dismissResult?.invoke(vanillaLatte)
                 }
+
                 "바닐라크림프라푸치노" -> {
                     val vanillaLatte = MenuData.CoffeeData(
                         "VanillaCreamFrappuccino",

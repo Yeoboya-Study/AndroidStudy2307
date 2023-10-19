@@ -30,10 +30,6 @@ class OrderFragment : Fragment() {
         return binding.root
     }
 
-    private fun onClick() = with(binding) {
-
-    }
-
     override fun onDestroyView() {
         _binding = null
         super.onDestroyView()
@@ -48,9 +44,12 @@ class OrderFragment : Fragment() {
         }
     }
 
+    /**
+     * bundle을 통해 주문 목록 GET( 버전 처리 ), Adapter Attach, 클릭 설정
+     */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val value = arguments?.let { bundle ->
+        arguments?.let { bundle ->
             orderList = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 bundle.getParcelableArrayList("order", MenuData::class.java) as ArrayList<MenuData>
             } else {
@@ -61,6 +60,5 @@ class OrderFragment : Fragment() {
             Log.d("menu", menuData.toString())
         }
         setAdapter()
-        onClick()
     }
 }
