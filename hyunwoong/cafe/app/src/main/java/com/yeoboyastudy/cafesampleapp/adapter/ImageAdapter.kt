@@ -5,20 +5,29 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
+import com.yeoboyastudy.cafesampleapp.data.ChatData
 import com.yeoboyastudy.cafesampleapp.data.PhotoResponse
 import com.yeoboyastudy.cafesampleapp.databinding.ItemImageBinding
 
-class ImageAdapter: RecyclerView.Adapter<ImageAdapter.ViewHolder>() {
+class ImageAdapter(
+    private val onClick: (String) -> Unit
+): RecyclerView.Adapter<ImageAdapter.ViewHolder>() {
 
-    var images: List<PhotoResponse> = emptyList()
+    private val adapterList = mutableListOf<PhotoResponse>()
+
+    fun set(list: List<PhotoResponse>) {
+        adapterList.clear()
+        adapterList.addAll(list)
+        notifyDataSetChanged()
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         ViewHolder(ItemImageBinding.inflate(LayoutInflater.from(parent.context), parent, false))
 
-    override fun getItemCount() = images.size
+    override fun getItemCount() = adapterList.size
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(images[position])
+        holder.bind(adapterList[position])
     }
 
 
@@ -31,6 +40,10 @@ class ImageAdapter: RecyclerView.Adapter<ImageAdapter.ViewHolder>() {
                 .thumbnail(Glide.with(binding.root).load(image.urls.thumb).transition(DrawableTransitionOptions.withCrossFade()))
                 .centerCrop()
                 .into(binding.searchImage)
+
+            binding.root.setOnClickListener {
+                onClick.invoke(image.urls.regular)
+            }
         }
     }
 }
