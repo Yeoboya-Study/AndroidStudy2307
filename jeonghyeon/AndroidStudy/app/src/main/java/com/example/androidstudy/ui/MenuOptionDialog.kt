@@ -134,7 +134,6 @@ class MenuOptionDialog(
                 binding.noneOption.id -> coffeeOption = CoffeeOption.None
             }
         }
-
     /**
      * 클릭 이벤트 ( 주문, 취소에 대한 이벤트 설정 )
      */

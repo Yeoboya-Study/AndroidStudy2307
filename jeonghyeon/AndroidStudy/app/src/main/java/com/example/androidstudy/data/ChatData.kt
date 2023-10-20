@@ -1,3 +1,24 @@
 package com.example.androidstudy.data
 
-data class ChatData(val msg: String, val type: Boolean, val img: String? = null)
+sealed class ChatData {
+
+    interface Base {
+        val isMe: Boolean
+    }
+
+    data class TextChat(
+        val msg: String,
+        override val isMe: Boolean
+    ) : ChatData(), Base
+
+    data class ImgChat(
+        override val isMe: Boolean,
+        val img: String
+    ) : ChatData(), Base
+
+    data class TextWithImgChat(
+        val msg : String,
+        override val isMe: Boolean,
+        val img : String
+    ) : ChatData(), Base
+}

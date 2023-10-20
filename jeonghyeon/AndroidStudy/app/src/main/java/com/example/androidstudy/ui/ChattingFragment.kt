@@ -2,7 +2,6 @@ package com.example.androidstudy.ui
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,12 +9,11 @@ import android.view.inputmethod.InputMethodManager
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
+import com.example.androidstudy.R
 import com.example.androidstudy.adapter.ChattingAdapter
 import com.example.androidstudy.data.ChatData
-import com.example.androidstudy.databinding.DialogSelectPhotoBinding
 import com.example.androidstudy.databinding.FragmentChattingBinding
 import com.example.androidstudy.model.ChattingViewModel
 
@@ -23,9 +21,13 @@ class ChattingFragment : Fragment() {
 
     private var _binding: FragmentChattingBinding? = null
     private val binding get() = _binding!!
-    private var message: ChatData? = null
+
+    //    private var message: ChatData? = null
     private lateinit var chattingAdapter: ChattingAdapter
     private lateinit var selectPhotoDialog: SelectPhotoDialog
+    private val addFragment: AddFragment by lazy {
+        AddFragment(setDialog = { setPhotoDialog() })
+    }
     private val model: ChattingViewModel by activityViewModels()
     private var mine = true
     private var img: String? = null
@@ -59,13 +61,24 @@ class ChattingFragment : Fragment() {
     private fun onClick() = with(binding) {
         //이미지 데이터 전달 후 초기화
         sendBtn.setOnClickListener {
-            model.sendChatting(ChatData(binding.inputEdt.text.toString(), mine, img))
+            //더블클릭 발생으로 인한 notify오류 방지
+            binding.sendBtn.isClickable = false
+            val chat = if(binding.inputEdt.text.isEmpty() && img.isNullOrEmpty()) null
+                    else if (binding.inputEdt.text.isEmpty()) ChatData.ImgChat(mine, img!!)
+                    else if (img.isNullOrEmpty()) ChatData.TextChat(binding.inputEdt.text.toString(), mine)
+                    else ChatData.TextWithImgChat(binding.inputEdt.text.toString(), mine, img!!)
+            chat?.let{model.sendChatting(chat)}?:run{binding.sendBtn.isClickable = true}
             mine = !mine
             chattingList.scrollToPosition(0)
             clearData()
         }
         selectPhotoBtn.setOnClickListener {
-            setPhotoBinding()
+            if(addFragment.isAdded){
+                childFragmentManager.popBackStack()
+            }else {
+                childFragmentManager.beginTransaction().add(R.id.addFragmentContainer, addFragment)
+                    .addToBackStack(null).commit()
+            }
         }
     }
 
@@ -87,16 +100,17 @@ class ChattingFragment : Fragment() {
     private fun setObserver() {
         model.chatList.observe(viewLifecycleOwner) {
             chattingAdapter.addToList(it)
+            binding.sendBtn.isClickable = true
         }
     }
 
     /**
      * 사진 첨부 Dialog띄우기 ( onClick => 선택한 사진(url)을 채팅에 추가 )
      */
-    private fun setPhotoBinding() {
+    private fun setPhotoDialog() {
         selectPhotoDialog = SelectPhotoDialog(onClick = { imgUrl ->
-            Glide.with(binding.root).load(imgUrl).into(binding.inputImg)
             img = imgUrl
+            Glide.with(binding.root).load(imgUrl).into(binding.inputImg)
             binding.imgInputContainer.isVisible = true
         })
         binding.selectContainer.isVisible = true
