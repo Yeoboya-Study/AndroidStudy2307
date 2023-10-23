@@ -22,15 +22,19 @@ class ChattingFragment : Fragment() {
     private var _binding: FragmentChattingBinding? = null
     private val binding get() = _binding!!
 
+    private var img: String? = null
     //    private var message: ChatData? = null
     private lateinit var chattingAdapter: ChattingAdapter
     private lateinit var selectPhotoDialog: SelectPhotoDialog
     private val addFragment: AddFragment by lazy {
-        AddFragment(setDialog = { setPhotoDialog() })
+        AddFragment(setDialog = { setPhotoDialog() }, setLocalImg = { uri ->
+            img = uri
+            Glide.with(binding.root).load(uri).into(binding.inputImg)
+            binding.imgInputContainer.isVisible = true
+        } )
     }
     private val model: ChattingViewModel by activityViewModels()
     private var mine = true
-    private var img: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

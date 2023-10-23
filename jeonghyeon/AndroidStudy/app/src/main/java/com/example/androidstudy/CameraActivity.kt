@@ -55,11 +55,6 @@ class CameraActivity : AppCompatActivity() {
         }
     }
 
-//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-//        super.onActivityResult(requestCode, resultCode, data)
-//
-//    }
-
     private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all{
         ContextCompat.checkSelfPermission(
             baseContext , it
@@ -69,7 +64,6 @@ class CameraActivity : AppCompatActivity() {
     private fun startCamera(viewFinder: PreviewView){
         Log.d("권한 인정", "확인")
     }
-
 
     private fun onClick() = with(binding) {
 
