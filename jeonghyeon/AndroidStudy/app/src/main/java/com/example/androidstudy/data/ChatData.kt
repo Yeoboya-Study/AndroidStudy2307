@@ -1,5 +1,7 @@
 package com.example.androidstudy.data
 
+import android.net.Uri
+
 sealed class ChatData {
 
     interface Base {
@@ -7,8 +9,8 @@ sealed class ChatData {
     }
 
     data class TextChat(
-        val msg: String,
-        override val isMe: Boolean
+        override val isMe: Boolean,
+        val msg: String
     ) : ChatData(), Base
 
     data class ImgChat(
@@ -17,8 +19,13 @@ sealed class ChatData {
     ) : ChatData(), Base
 
     data class TextWithImgChat(
-        val msg : String,
         override val isMe: Boolean,
+        val msg : String,
         val img : String
+    ) : ChatData(), Base
+
+    data class VideoChat(
+        override val isMe : Boolean,
+        val video : Uri
     ) : ChatData(), Base
 }

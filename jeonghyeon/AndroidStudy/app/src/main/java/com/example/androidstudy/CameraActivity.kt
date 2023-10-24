@@ -1,9 +1,11 @@
 package com.example.androidstudy
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.view.PreviewView
 import androidx.core.app.ActivityCompat
@@ -14,17 +16,19 @@ class CameraActivity : AppCompatActivity() {
 
     private var _binding : ActivityCameraBinding? = null
     private val binding get() = _binding!!
-
     companion object {
         private const val REQUEST_CODE_PERMISSIONS = 1000
         private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.CAMERA)
+    }
+    private val startActivityForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
+
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         _binding = ActivityCameraBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        checkCameraPermission()
+//        checkCameraPermission()
         onClick()
     }
 
@@ -46,11 +50,9 @@ class CameraActivity : AppCompatActivity() {
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        Log.d("권한 인정", "b확인")
         if(requestCode == REQUEST_CODE_PERMISSIONS) {
             startCamera(binding.viewFinder)
         }else {
-            Log.d("꺼버릴거야", "버렸다")
             finish()
         }
     }
@@ -66,7 +68,10 @@ class CameraActivity : AppCompatActivity() {
     }
 
     private fun onClick() = with(binding) {
-
+        imageCaptureButton.setOnClickListener{
+            val intent = Intent(Intent.ACTION_CAMERA_BUTTON)
+            startActivityForResult.launch(intent)
+        }
     }
 
 }

@@ -12,7 +12,9 @@ class ChattingViewModel : ViewModel() {
     val chatList : LiveData<MutableList<ChatData>> get() = _chatList
 
     fun sendChatting(chatData: ChatData) {
-        _chatList.value!!.add(0, chatData)
-        _chatList.postValue(_chatList.value)
+        _chatList.value?.let{
+            _chatList.value!!.add(0, chatData)
+            _chatList.postValue(_chatList.value)
+        }
     }
 }

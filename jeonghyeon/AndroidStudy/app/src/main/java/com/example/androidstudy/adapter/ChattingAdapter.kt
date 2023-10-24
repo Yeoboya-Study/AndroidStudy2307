@@ -1,7 +1,9 @@
 package com.example.androidstudy.adapter
 
+import android.media.MediaPlayer.OnPreparedListener
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -12,6 +14,9 @@ import com.example.androidstudy.databinding.ItemTextImgLeftLayoutBinding
 import com.example.androidstudy.databinding.ItemTextImgRightLayoutBinding
 import com.example.androidstudy.databinding.ItemTextLeftLayoutBinding
 import com.example.androidstudy.databinding.ItemTextRightLayoutBinding
+import com.example.androidstudy.databinding.ItemVideoLeftLayoutBinding
+import com.example.androidstudy.databinding.ItemVideoRightLayoutBinding
+
 
 class ChattingAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -57,6 +62,20 @@ class ChattingAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         }
     }
 
+    inner class VideoRightChattingHolder(private val binding: ItemVideoRightLayoutBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+        fun bind(position: Int) {
+            val chat = chatList[position] as ChatData.VideoChat
+            binding.videoChatView.setVideoURI(chat.video)
+
+            //준비 되면 실행할 것
+            binding.videoChatView.setOnPreparedListener {
+                it.seekTo(0)
+                it.start()
+            }
+        }
+    }
+
     /**
      * 텍스트 채팅 (좌측)
      */
@@ -97,12 +116,26 @@ class ChattingAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         }
     }
 
+    inner class VideoLeftChattingHolder(private val binding: ItemVideoLeftLayoutBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+        fun bind(position: Int) {
+            val chat = chatList[position] as ChatData.VideoChat
+            binding.videoChatView.setVideoURI(chat.video)
+
+            //준비 되면 실행할 것
+            binding.videoChatView.setOnPreparedListener {
+                it.seekTo(0)
+                it.start()
+            }
+        }
+    }
+
 
     /**
      * ViewType을 구분하여 ViewHodler에 전달하기 (왼쪽 1, 오른쪽 0 )
      */
     enum class Type {
-        TEXT_RIGHT, TEXT_LEFT, TEXT_IMG_RIGHT, TEXT_IMG_LEFT, IMG_RIGHT, IMG_LEFT
+        TEXT_RIGHT, TEXT_LEFT, TEXT_IMG_RIGHT, TEXT_IMG_LEFT, IMG_RIGHT, IMG_LEFT, VIDEO_RIGHT, VIDEO_LEFT
     }
 
 
@@ -111,13 +144,15 @@ class ChattingAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             when (chatList[position]) {
                 is ChatData.ImgChat -> Type.IMG_RIGHT.ordinal
                 is ChatData.TextChat -> Type.TEXT_RIGHT.ordinal
-                else -> Type.TEXT_IMG_RIGHT.ordinal
+                is ChatData.TextWithImgChat -> Type.TEXT_IMG_RIGHT.ordinal
+                is ChatData.VideoChat -> Type.VIDEO_RIGHT.ordinal
             }
         } else {
             when (chatList[position]) {
                 is ChatData.ImgChat -> Type.IMG_LEFT.ordinal
                 is ChatData.TextChat -> Type.TEXT_LEFT.ordinal
-                else -> Type.TEXT_IMG_LEFT.ordinal
+                is ChatData.TextWithImgChat -> Type.TEXT_IMG_LEFT.ordinal
+                is ChatData.VideoChat -> Type.VIDEO_LEFT.ordinal
             }
         }
     }
@@ -146,6 +181,12 @@ class ChattingAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             Type.TEXT_IMG_LEFT.ordinal -> TextWithImgLeftChattingHolder(
                 ItemTextImgLeftLayoutBinding.inflate(layoutInflater, parent, false)
             )
+            Type.VIDEO_RIGHT.ordinal -> VideoRightChattingHolder(
+                ItemVideoRightLayoutBinding.inflate(layoutInflater, parent, false)
+            )
+            Type.VIDEO_LEFT.ordinal -> VideoLeftChattingHolder(
+                ItemVideoLeftLayoutBinding.inflate(layoutInflater, parent, false)
+            )
             else -> TextRightChattingHolder(
                 ItemTextRightLayoutBinding.inflate(layoutInflater, parent, false)
             )
@@ -163,6 +204,8 @@ class ChattingAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             is ImgLeftChattingHolder -> holder.bind(position)
             is TextWithImgRightChattingHolder -> holder.bind(position)
             is TextWithImgLeftChattingHolder -> holder.bind(position)
+            is VideoRightChattingHolder -> holder.bind(position)
+            is VideoLeftChattingHolder -> holder.bind(position)
         }
     }
 
@@ -174,10 +217,7 @@ class ChattingAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
      * chatList 업데이트, UI업데이트
      */
     fun addToList(list: MutableList<ChatData>) {
-        chatList = list
-        if (list.size > 0) {
-            notifyItemInserted(0)
-        }
-        else notifyDataSetChanged()
+            chatList = list
+        notifyDataSetChanged()
     }
 }

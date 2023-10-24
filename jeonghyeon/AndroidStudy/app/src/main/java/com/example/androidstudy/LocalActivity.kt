@@ -11,6 +11,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.os.bundleOf
 import com.example.androidstudy.databinding.ActivityLocalBinding
 
 class LocalActivity : AppCompatActivity(){
@@ -23,10 +24,9 @@ class LocalActivity : AppCompatActivity(){
 
     private var _binding : ActivityLocalBinding? = null
     private val binding get()=_binding!!
-    private val startActivityForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        var intent = Intent().apply{
-            putExtra(LOCAL_ACTIVITY_RESULT_KEY, result.data?.dataString.toString())
-        }
+    private val startActivityForResult = registerForActivityResult(ActivityResultContracts.GetContent()) { result ->
+        val intent = Intent()
+        intent.putExtras(bundleOf(LOCAL_ACTIVITY_RESULT_KEY to result))
         setResult(LOCAL_ACTIVITY_RESULT_CODE, intent)
         finish()
     }
@@ -35,13 +35,7 @@ class LocalActivity : AppCompatActivity(){
         super.onCreate(savedInstanceState)
         _binding = ActivityLocalBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        onClick()
-    }
-
-    private fun onClick() {
-        binding.click.setOnClickListener{
-            initAddLocalGallery()
-        }
+        initAddLocalGallery()
     }
 
     private fun initAddLocalGallery(){
@@ -96,8 +90,8 @@ class LocalActivity : AppCompatActivity(){
     }
 
     private fun setLocalPhotos(){
-        val intent = Intent(Intent.ACTION_GET_CONTENT)
-        intent.type = "image/*"
-        startActivityForResult.launch(intent)
+//        val intent = Intent(Intent.ACTION_GET_CONTENT)
+//        intent.type =
+        startActivityForResult.launch("image/*")
     }
 }
