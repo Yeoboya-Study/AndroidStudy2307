@@ -126,6 +126,7 @@ class ChattingFragment : Fragment() {
             img = imgUrl
             Glide.with(binding.root).load(imgUrl).into(binding.inputImg)
             binding.imgInputContainer.isVisible = true
+            childFragmentManager.beginTransaction().hide(selectPhotoDialog).commit()
         })
         binding.selectContainer.isVisible = true
         selectPhotoDialog.show(childFragmentManager, "")

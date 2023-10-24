@@ -46,6 +46,14 @@ class AddFragment(
             }
         }
 
+    private val requestImgPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()){isGranted ->
+        if(isGranted){
+            showImg()
+        }else{
+            showPermissionPopup(IMG_PERMISSION, IMG_PERMISSION_REQUEST)
+        }
+    }
+
     companion object {
         const val IMG_PERMISSION = android.Manifest.permission.READ_MEDIA_IMAGES
         const val VIDEO_PERMISSION = android.Manifest.permission.READ_MEDIA_VIDEO
@@ -72,11 +80,9 @@ class AddFragment(
     private fun onClick() = with(binding) {
         setPhotoDialogButton.setOnClickListener {
             setDialog.invoke()
-            parentFragmentManager.popBackStack()
         }
         setCameraButton.setOnClickListener {
-//            val intent = Intent(requireContext(), CameraActivity::class.java)
-//            startForResult.launch(intent)
+            //todo 카메라 설정
         }
         setGalleryButton.setOnClickListener {
             checkGalleryPermission()
@@ -97,14 +103,14 @@ class AddFragment(
                 showImg()
             }
             shouldShowRequestPermissionRationale(IMG_PERMISSION) -> {
-                showPermissionPopup(IMG_PERMISSION)
+                showPermissionPopup(IMG_PERMISSION, IMG_PERMISSION_REQUEST)
             }
+            //남는 경우 : 처음인 경우, 다시는 묻지 않겠음(옵션)
             else -> {
-                requestPermissions(arrayOf(IMG_PERMISSION), IMG_PERMISSION_REQUEST)
+                requestImgPermissionLauncher.launch(IMG_PERMISSION)
             }
         }
     }
-
 
     private fun showImg() {
         getImgContent.launch("image/*")
@@ -122,9 +128,8 @@ class AddFragment(
             }
 
             shouldShowRequestPermissionRationale(VIDEO_PERMISSION) -> {
-                showPermissionPopup(VIDEO_PERMISSION)
+                showPermissionPopup(VIDEO_PERMISSION, VIDEO_PERMISSION_REQUEST)
             }
-
             else -> {
                 requestPermissions(arrayOf(VIDEO_PERMISSION), VIDEO_PERMISSION_REQUEST)
             }
@@ -140,12 +145,12 @@ class AddFragment(
     /**
      * 이전에 권한 거부 했을때, 재 확인을 위해 띄워주는 팝업창
      */
-    private fun showPermissionPopup(permission: String) {
+    private fun showPermissionPopup(permission: String, request : Int) {
         AlertDialog.Builder(requireContext())
             .setTitle("권한이 필요합니다")
             .setMessage("앱에서 필요한 권한을 허용하겠습니까")
             .setPositiveButton("응") { _, _ ->
-                requestPermissions(arrayOf(permission), VIDEO_PERMISSION_REQUEST)
+                requestPermissions(arrayOf(permission), request)
             }
             .setNegativeButton("Nope") { _, _ -> }
             .create()
