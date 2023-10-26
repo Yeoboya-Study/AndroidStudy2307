@@ -11,4 +11,12 @@
     <style name="DialogFullScreen">
         <item name="android:windowIsFloating">false</item>
     </style>
+
+    <style name="DialogCornerRadius">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowFullscreen">false</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowCloseOnTouchOutside">true</item>
+        <item name="android:windowBackground">@color/transparent_00</item>
+    </style>
 </resources>

@@ -3,6 +3,7 @@
     <string name="cafe_title">Cafe</string>
     <string name="gallery_title">Gallery</string>
     <string name="chat_title">Chat</string>
+    <string name="todo_title">Todo</string>
     <string name="americano">Americano</string>
     <string name="cafe_latte">CafeLatte</string>
     <string name="vanilla_latte">VanillaLatte</string>
