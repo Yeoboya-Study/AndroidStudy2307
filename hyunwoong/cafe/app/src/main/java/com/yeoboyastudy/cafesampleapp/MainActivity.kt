@@ -11,6 +11,7 @@ import com.yeoboyastudy.cafesampleapp.extension.showToast
 import com.yeoboyastudy.cafesampleapp.ui.CafeFragment
 import com.yeoboyastudy.cafesampleapp.ui.ChatFragment
 import com.yeoboyastudy.cafesampleapp.ui.GalleryFragment
+import com.yeoboyastudy.cafesampleapp.ui.TodoFragment
 
 class MainActivity : AppCompatActivity() {
 
@@ -22,6 +23,7 @@ class MainActivity : AppCompatActivity() {
 
     private var mGalleryFragment: GalleryFragment? = null
     private var mChatFragment: ChatFragment? = null
+    private var mTodoFragment: TodoFragment? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,6 +43,10 @@ class MainActivity : AppCompatActivity() {
 
         chatButton.setOnClickListener {
             addChatFragment()
+        }
+
+        todoButton.setOnClickListener {
+            todoChatFragment()
         }
     }
 
@@ -65,6 +71,12 @@ class MainActivity : AppCompatActivity() {
         mChatFragment = ChatFragment()
         binding.container.isVisible = true
         addFragment(R.id.container, mChatFragment, addBackStack = true)
+    }
+
+    private fun todoChatFragment() {
+        mTodoFragment = TodoFragment()
+        binding.container.isVisible = true
+        addFragment(R.id.container, mTodoFragment, addBackStack = true)
     }
 
     override fun onBackPressed() {
